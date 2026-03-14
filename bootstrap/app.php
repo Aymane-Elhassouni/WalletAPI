@@ -20,7 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        // 1. التعامل مع 401 (Unauthorized)
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -30,7 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // 2. التعامل مع 403 (Forbidden)
         $exceptions->render(function (AccessDeniedHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -40,7 +38,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // 3. التعامل مع 404 (Not Found)
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -50,10 +47,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
-        // 4. التعامل مع 500 (Internal Server Error)
         $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('api/*')) {
-                // ملاحظة: هاد الخطأ كيشمل أي حاجة تفركعات في السيستم
                 return response()->json([
                     "success" => false,
                     "message" => "Une erreur interne est survenue. Veuillez réessayer."
