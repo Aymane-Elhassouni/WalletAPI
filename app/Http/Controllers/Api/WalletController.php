@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class WalletController extends Controller
 {
@@ -50,7 +51,15 @@ class WalletController extends Controller
                 "success" => true,
                 "message" => "Wallet créé avec succès.",
                 "data" => [
-                    "wallet" => $wallet
+                    "wallet" => [
+                        "id" => $wallet->id,
+                        "user_id" => $wallet->user_id,
+                        "name" => $wallet->name,
+                        "currency" => $wallet->currency,
+                        "balance" => number_format((float)$wallet->balance, 2, '.', ''),
+                        "created_at" => $wallet->created_at->format('Y-m-d\TH:i:s.u\Z'),
+                        "updated_at" => $wallet->updated_at->format('Y-m-d\TH:i:s.u\Z'),
+                    ]
                 ]
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -76,7 +85,7 @@ class WalletController extends Controller
             ], 404);
         }
 
-        if ($wallet->user_id !== $request->user()->id) {
+        if ($wallet->user_id !== Auth::id()) {
             return response()->json([
                 "success" => false,
                 "message" => "Vous n'êtes pas autorisé à accéder à ce wallet."
@@ -87,7 +96,15 @@ class WalletController extends Controller
             "success" => true,
             "message" => "Détail du wallet récupéré.",
             "data" => [
-                "wallet" => $wallet
+                "wallet" => [
+                    "id" => $wallet->id,
+                    "user_id" => $wallet->user_id,
+                    "name" => $wallet->name,
+                    "currency" => $wallet->currency,
+                    "balance" => number_format((float)$wallet->balance, 2, '.', ''),
+                    "created_at" => $wallet->created_at->format('Y-m-d\TH:i:s\Z'),
+                    "updated_at" => $wallet->updated_at->format('Y-m-d\TH:i:s\Z'),
+                ]
             ]
         ], 200);
     }
